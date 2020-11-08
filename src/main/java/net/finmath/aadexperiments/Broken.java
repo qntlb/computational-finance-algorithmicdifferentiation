@@ -8,8 +8,6 @@ package net.finmath.aadexperiments;
 
 import net.finmath.aadexperiments.value.Value;
 import net.finmath.aadexperiments.value.ValueDoubleDifferentiable;
-import net.finmath.montecarlo.automaticdifferentiation.RandomVariableDifferentiableFactory;
-import net.finmath.montecarlo.automaticdifferentiation.backward.RandomVariableDifferentiableAADFactory;
 
 /**
  * @author Christian Fries
@@ -19,8 +17,6 @@ public class Broken {
 
 	public static void main( String[] args )
 	{
-		RandomVariableDifferentiableFactory randomVariableFactory = new RandomVariableDifferentiableAADFactory();
-
 		// Create an input value
 		var x = new ValueDoubleDifferentiable(1.0);
 
