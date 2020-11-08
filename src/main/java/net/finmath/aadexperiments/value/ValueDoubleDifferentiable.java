@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class ValueDoubleDifferentiable implements ValueDifferentiable {
@@ -98,8 +100,8 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable {
 		// Init with dy / dy = 1
 		derivativesWithRespectTo.put(this, 1.0);
 
-		// This creates a set (queue) of objects, sorted ascending by their getID() value
-		PriorityQueue<ValueDoubleDifferentiable> nodesToProcess = new PriorityQueue<>((o1,o2) -> -o1.getID().compareTo(o2.getID()));
+		// This creates a set (queue) of objects, sorted descending by their getID() value
+		SortedSet<ValueDoubleDifferentiable> nodesToProcess = new TreeSet<>((o1,o2) -> -o1.getID().compareTo(o2.getID()));
 
 		// Add the root note
 		nodesToProcess.add(this);
@@ -108,7 +110,8 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable {
 		while(!nodesToProcess.isEmpty()) {
 
 			// Get and remove the top most node.
-			ValueDoubleDifferentiable currentNode = nodesToProcess.poll();
+			ValueDoubleDifferentiable currentNode = nodesToProcess.first();
+			nodesToProcess.remove(currentNode);
 
 			List<ValueDoubleDifferentiable> currentNodeArguments = currentNode.getArguments();
 			if(currentNodeArguments != null) {
