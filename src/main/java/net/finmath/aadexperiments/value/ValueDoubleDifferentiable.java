@@ -118,7 +118,12 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable {
 				for(ValueDoubleDifferentiable argument : currentNodeArguments) if(!derivativesWithRespectTo.containsKey(argument)) derivativesWithRespectTo.put(argument, 0.0);
 
 				// Update the derivative as Di = Di + Dm * dxm / dxi (where Dm = dy/xm).
-				switch(currentNode.getOperator()) {
+				switch(currentNode.getOperator()) {/*
+				 * (c) Copyright Christian P. Fries, Germany. Contact: email@christian-fries.de.
+				 *
+				 * Created on 08.11.2020
+				 */
+
 				case ADD:
 					derivativesWithRespectTo.put(currentNodeArguments.get(0), derivativesWithRespectTo.get(currentNodeArguments.get(0)) + derivativesWithRespectTo.get(currentNode) * 1.0);
 					derivativesWithRespectTo.put(currentNodeArguments.get(1), derivativesWithRespectTo.get(currentNodeArguments.get(1)) + derivativesWithRespectTo.get(currentNode) * 1.0);

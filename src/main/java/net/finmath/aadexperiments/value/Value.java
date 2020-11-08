@@ -1,3 +1,8 @@
+/*
+ * (c) Copyright Christian P. Fries, Germany. Contact: email@christian-fries.de.
+ *
+ * Created on 08.11.2020
+ */
 package net.finmath.aadexperiments.value;
 
 public interface Value {

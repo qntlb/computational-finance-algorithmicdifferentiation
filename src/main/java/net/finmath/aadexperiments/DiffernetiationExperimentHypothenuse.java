@@ -1,3 +1,8 @@
+/*
+ * (c) Copyright Christian P. Fries, Germany. Contact: email@christian-fries.de.
+ *
+ * Created on 08.11.2020
+ */
 package net.finmath.aadexperiments;
 
 import net.finmath.aadexperiments.value.Value;
@@ -48,6 +53,13 @@ public class DiffernetiationExperimentHypothenuse {
 		System.out.println("Derivative (automatic differentiation)...: " + dzdxAlgorithmicDifferentiation);
 	}
 
+	/**
+	 * Calculates the hypotenuse on objects implementing <code>Value</code>-interface.
+	 * 
+	 * @param a The parameter a in sqrt(a^2 + b^2).
+	 * @param b The parameter b in sqrt(a^2 + b^2).
+	 * @return The value of c = sqrt(a^2 + b^2)
+	 */
 	private static Value hypotenuse(Value a, Value b) {
 		Value c = (a.squared().add(b.squared())).sqrt();
 		return c;
