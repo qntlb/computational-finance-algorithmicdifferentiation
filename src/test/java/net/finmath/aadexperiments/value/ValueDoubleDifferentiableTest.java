@@ -1,6 +1,6 @@
 package net.finmath.aadexperiments.value;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
