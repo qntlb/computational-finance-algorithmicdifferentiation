@@ -1,4 +1,4 @@
-// The following can be run in jshell. Launch jshell from this project via the command:     mvn jshell:run
+// The following can be run in jshell. Launch jshell from this project via the command:     mvn compile jshell:run
 
 import net.finmath.aadexperiments.value.*;
 
@@ -11,8 +11,8 @@ var z = hypothenuse.apply(x,y);
 
 var eps = new ValueDoubleDifferentiable(1E-5);
 
-var derivFD = hypothenuse.apply(x.add(eps),y).sub(z).div(eps);
+var derivAN = x.div(z);		// Analytic
 
-var derivAN = x.div(z);
+var derivFD = hypothenuse.apply(x.add(eps),y).sub(z).div(eps);		// Finite Difference
 
-var derivAD = ((ValueDoubleDifferentiable) z).getDerivativeWithRespectTo(x);
+var derivAD = ((ValueDifferentiable) z).getDerivativeWithRespectTo(x);		// Algorithmic Differentiation

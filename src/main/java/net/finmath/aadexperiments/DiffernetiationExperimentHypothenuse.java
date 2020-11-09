@@ -6,6 +6,7 @@
 package net.finmath.aadexperiments;
 
 import net.finmath.aadexperiments.value.Value;
+import net.finmath.aadexperiments.value.ValueDifferentiable;
 import net.finmath.aadexperiments.value.ValueDoubleDifferentiable;
 
 public class DiffernetiationExperimentHypothenuse {
@@ -23,6 +24,11 @@ public class DiffernetiationExperimentHypothenuse {
 		System.out.println("Results for a = " + a + " and b = " + b);
 		System.out.println();
 		
+		/*
+		 * Note that the code below this point does not make any use of the specific implementation.
+		 * It only references the interfaces <code>Value</code> and <code>ValueDifferentiable</code>
+		 */
+
 		/*
 		 * Evaluation of function
 		 */
@@ -47,9 +53,12 @@ public class DiffernetiationExperimentHypothenuse {
 		Value dzdxFinitedifferce = (hypotenuse(a.add(epsilon), b).sub(hypotenuse(a, b)).div(epsilon));
 		System.out.println("Derivative (finite difference)...........: " + dzdxFinitedifferce);
 		System.out.println();
-	
-	
-		Value dzdxAlgorithmicDifferentiation = ((ValueDoubleDifferentiable)c).getDerivativeWithRespectTo((ValueDoubleDifferentiable)a);
+
+		
+		/*
+		 * Partial derivative dz/dx by algorithmic differentiation - we need to have that the objects are implementing <code>ValueDifferentiable</code>.
+		 */
+		Value dzdxAlgorithmicDifferentiation = ((ValueDifferentiable)c).getDerivativeWithRespectTo((ValueDifferentiable)a);
 		System.out.println("Derivative (automatic differentiation)...: " + dzdxAlgorithmicDifferentiation);
 	}
 
