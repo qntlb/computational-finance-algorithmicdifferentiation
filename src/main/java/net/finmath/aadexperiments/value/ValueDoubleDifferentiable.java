@@ -1,9 +1,13 @@
+/*
+ * (c) Copyright Christian P. Fries, Germany. Contact: email@christian-fries.de.
+ *
+ * Created on 08.11.2020
+ */
 package net.finmath.aadexperiments.value;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -12,7 +16,7 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable {
 	private enum Operator {
 		SQUARED, SQRT, ADD, SUB, MULT, DIV
 	}
-	
+
 	private static AtomicLong nextId = new AtomicLong();
 
 	private Double value;
@@ -99,8 +103,8 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable {
 		// Init with dy / dy = 1
 		derivativesWithRespectTo.put(this, 1.0);
 
-		// This creates a set (queue) of objects, sorted descending by their getID() value
-		SortedSet<ValueDoubleDifferentiable> nodesToProcess = new TreeSet<>((o1,o2) -> -o1.getID().compareTo(o2.getID()));
+		// This creates a set (queue) of objects, sorted ascending by their getID() value (last = highest ID)
+		TreeSet<ValueDoubleDifferentiable> nodesToProcess = new TreeSet<>((o1,o2) -> o1.getID().compareTo(o2.getID()));
 
 		// Add the root note
 		nodesToProcess.add(this);
@@ -109,8 +113,7 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable {
 		while(!nodesToProcess.isEmpty()) {
 
 			// Get and remove the top most node.
-			ValueDoubleDifferentiable currentNode = nodesToProcess.first();
-			nodesToProcess.remove(currentNode);
+			ValueDoubleDifferentiable currentNode = nodesToProcess.pollLast();
 
 			List<ValueDoubleDifferentiable> currentNodeArguments = currentNode.getArguments();
 			if(currentNodeArguments != null) {
@@ -118,12 +121,7 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable {
 				for(ValueDoubleDifferentiable argument : currentNodeArguments) if(!derivativesWithRespectTo.containsKey(argument)) derivativesWithRespectTo.put(argument, 0.0);
 
 				// Update the derivative as Di = Di + Dm * dxm / dxi (where Dm = dy/xm).
-				switch(currentNode.getOperator()) {/*
-				 * (c) Copyright Christian P. Fries, Germany. Contact: email@christian-fries.de.
-				 *
-				 * Created on 08.11.2020
-				 */
-
+				switch(currentNode.getOperator()) {
 				case ADD:
 					derivativesWithRespectTo.put(currentNodeArguments.get(0), derivativesWithRespectTo.get(currentNodeArguments.get(0)) + derivativesWithRespectTo.get(currentNode) * 1.0);
 					derivativesWithRespectTo.put(currentNodeArguments.get(1), derivativesWithRespectTo.get(currentNodeArguments.get(1)) + derivativesWithRespectTo.get(currentNode) * 1.0);
