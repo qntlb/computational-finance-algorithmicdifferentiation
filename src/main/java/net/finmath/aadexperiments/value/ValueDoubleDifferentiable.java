@@ -98,7 +98,7 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable {
 	 * @return A map x -> D which gives D = dy/dx, where y is this node and x is any input node.
 	 */
 	public Map<ValueDifferentiable, Double> getDerivativeWithRespectTo() {
-
+		// The map that will contain the derivatives x -> dy/dx
 		Map<ValueDifferentiable, Double> derivativesWithRespectTo = new HashMap<>();
 		// Init with dy / dy = 1
 		derivativesWithRespectTo.put(this, 1.0);
@@ -117,39 +117,47 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable {
 
 			List<ValueDoubleDifferentiable> currentNodeArguments = currentNode.getArguments();
 			if(currentNodeArguments != null) {
-				// If node derivative has been calculated yet for an argument node, initialize it to 0.0
-				for(ValueDoubleDifferentiable argument : currentNodeArguments) if(!derivativesWithRespectTo.containsKey(argument)) derivativesWithRespectTo.put(argument, 0.0);
-
 				// Update the derivative as Di = Di + Dm * dxm / dxi (where Dm = dy/xm).
-				switch(currentNode.getOperator()) {
-				case ADD:
-					derivativesWithRespectTo.put(currentNodeArguments.get(0), derivativesWithRespectTo.get(currentNodeArguments.get(0)) + derivativesWithRespectTo.get(currentNode) * 1.0);
-					derivativesWithRespectTo.put(currentNodeArguments.get(1), derivativesWithRespectTo.get(currentNodeArguments.get(1)) + derivativesWithRespectTo.get(currentNode) * 1.0);
-					break;
-				case SUB:
-					derivativesWithRespectTo.put(currentNodeArguments.get(0), derivativesWithRespectTo.get(currentNodeArguments.get(0)) + derivativesWithRespectTo.get(currentNode) * 1.0);
-					derivativesWithRespectTo.put(currentNodeArguments.get(1), derivativesWithRespectTo.get(currentNodeArguments.get(1)) - derivativesWithRespectTo.get(currentNode) * 1.0);
-					break;
-				case MULT:
-					derivativesWithRespectTo.put(currentNodeArguments.get(0), derivativesWithRespectTo.get(currentNodeArguments.get(0)) + derivativesWithRespectTo.get(currentNode) * currentNodeArguments.get(1).asFloatingPoint());
-					derivativesWithRespectTo.put(currentNodeArguments.get(1), derivativesWithRespectTo.get(currentNodeArguments.get(1)) + derivativesWithRespectTo.get(currentNode) * currentNodeArguments.get(0).asFloatingPoint());
-					break;
-				case DIV:
-					break;
-				case SQUARED:
-					derivativesWithRespectTo.put(currentNodeArguments.get(0), derivativesWithRespectTo.get(currentNodeArguments.get(0)) + derivativesWithRespectTo.get(currentNode) * 2 * currentNodeArguments.get(0).asFloatingPoint());
-					break;
-				case SQRT:
-					derivativesWithRespectTo.put(currentNodeArguments.get(0), derivativesWithRespectTo.get(currentNodeArguments.get(0)) + derivativesWithRespectTo.get(currentNode) / 2 / Math.sqrt(currentNodeArguments.get(0).asFloatingPoint()));
-					break;
-				}
+				propagateDerivativeToArguments(derivativesWithRespectTo, currentNode, currentNodeArguments);
 
 				// Add all arguments to our queue of nodes we have to work on
 				nodesToProcess.addAll(currentNode.getArguments());
 			}
 		}
-
 		return derivativesWithRespectTo;
+	}
+
+	/**
+	 * Apply the update rule Di = Di + Dm * dxm / dxi (where Dm = dy/xm).
+	 * 
+	 * @param derivatives The map that contains the derivatives x -> dy/dx and will be updated, that is Di = dy/dx_{i}.
+	 * @param node The current node (xm).
+	 * @param arguments The (list of) arguments of the current node (the i's).
+	 */
+	private void propagateDerivativeToArguments(Map<ValueDifferentiable, Double> derivatives, ValueDoubleDifferentiable node, List<ValueDoubleDifferentiable> arguments) {
+		
+		switch(node.getOperator()) {
+		case ADD:
+			derivatives.put(arguments.get(0), derivatives.getOrDefault(arguments.get(0),0.0) + derivatives.get(node) * 1.0);
+			derivatives.put(arguments.get(1), derivatives.getOrDefault(arguments.get(1),0.0) + derivatives.get(node) * 1.0);
+			break;
+		case SUB:
+			derivatives.put(arguments.get(0), derivatives.getOrDefault(arguments.get(0),0.0) + derivatives.get(node) * 1.0);
+			derivatives.put(arguments.get(1), derivatives.getOrDefault(arguments.get(1),0.0) - derivatives.get(node) * 1.0);
+			break;
+		case MULT:
+			derivatives.put(arguments.get(0), derivatives.getOrDefault(arguments.get(0),0.0) + derivatives.get(node) * arguments.get(1).asFloatingPoint());
+			derivatives.put(arguments.get(1), derivatives.getOrDefault(arguments.get(1),0.0) + derivatives.get(node) * arguments.get(0).asFloatingPoint());
+			break;
+		case DIV:
+			break;
+		case SQUARED:
+			derivatives.put(arguments.get(0), derivatives.getOrDefault(arguments.get(0),0.0) + derivatives.get(node) * 2 * arguments.get(0).asFloatingPoint());
+			break;
+		case SQRT:
+			derivatives.put(arguments.get(0), derivatives.getOrDefault(arguments.get(0),0.0) + derivatives.get(node) / 2 / Math.sqrt(arguments.get(0).asFloatingPoint()));
+			break;
+		}	
 	}
 
 	@Override

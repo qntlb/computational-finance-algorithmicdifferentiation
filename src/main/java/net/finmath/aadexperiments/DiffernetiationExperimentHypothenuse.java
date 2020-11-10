@@ -12,7 +12,7 @@ import net.finmath.aadexperiments.value.ValueDoubleDifferentiable;
 public class DiffernetiationExperimentHypothenuse {
 
 	public static void main(String[] args) {
-		
+
 		/*
 		 * Note: The behavior of the program will change, depending on
 		 * which implementation is used for Value. Use either ValueDouble or ValueDoubleDifferentiable.
@@ -23,7 +23,7 @@ public class DiffernetiationExperimentHypothenuse {
 
 		System.out.println("Results for a = " + a + " and b = " + b);
 		System.out.println();
-		
+
 		/*
 		 * Note that the code below this point does not make any use of the specific implementation.
 		 * It only references the interfaces <code>Value</code> and <code>ValueDifferentiable</code>
@@ -33,11 +33,11 @@ public class DiffernetiationExperimentHypothenuse {
 		 * Evaluation of function
 		 */
 		Value c = hypotenuse(a,b);
-		
+
 		System.out.println("Value is c = ............................: " + c);
 		System.out.println("The type of c is ........................: " + c.getClass().getSimpleName());
 		System.out.println();
-		
+
 
 		/*
 		 * Partial derivative dz/dx
@@ -46,7 +46,7 @@ public class DiffernetiationExperimentHypothenuse {
 		System.out.println("Derivative (analytic)....................: " + dzdxAnalytic);
 		System.out.println();
 
-		
+
 		/*
 		 * Partial derivative dz/dx by finite difference
 		 */
@@ -54,7 +54,7 @@ public class DiffernetiationExperimentHypothenuse {
 		System.out.println("Derivative (finite difference)...........: " + dzdxFinitedifferce);
 		System.out.println();
 
-		
+
 		/*
 		 * Partial derivative dz/dx by algorithmic differentiation - we need to have that the objects are implementing <code>ValueDifferentiable</code>.
 		 */
@@ -64,7 +64,7 @@ public class DiffernetiationExperimentHypothenuse {
 
 	/**
 	 * Calculates the hypotenuse on objects implementing <code>Value</code>-interface.
-	 * 
+	 *
 	 * @param a The parameter a in sqrt(a^2 + b^2).
 	 * @param b The parameter b in sqrt(a^2 + b^2).
 	 * @return The value of c = sqrt(a^2 + b^2)

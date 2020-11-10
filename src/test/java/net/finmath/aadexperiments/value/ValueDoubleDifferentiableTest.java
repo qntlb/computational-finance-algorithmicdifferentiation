@@ -20,9 +20,9 @@ class ValueDoubleDifferentiableTest {
 
 		ValueDifferentiable a = new ValueDoubleDifferentiable(3.0);
 		ValueDifferentiable b = new ValueDoubleDifferentiable(4.0);
-		
+
 		ValueDifferentiable c = (ValueDifferentiable) hypotenuse.apply(a, b);
-		
+
 		Value derivativeAnalytic1 = a.div(c);
 		Value derivativeAlgorithmic1 = c.getDerivativeWithRespectTo(a);
 		assertEquals(derivativeAnalytic1.asFloatingPoint(), derivativeAlgorithmic1.asFloatingPoint(), 1E-15, "partial derivative dz/dx");
@@ -38,9 +38,9 @@ class ValueDoubleDifferentiableTest {
 
 		ValueDifferentiable a = new ValueDoubleDifferentiable(4.0);
 		ValueDifferentiable b = new ValueDoubleDifferentiable(7.0);
-		
+
 		ValueDifferentiable c = (ValueDifferentiable) hypotenuse.apply(a, b);
-		
+
 		Value derivativeAnalytic1 = a.div(c);
 		Value derivativeAlgorithmic1 = c.getDerivativeWithRespectTo(a);
 		assertEquals(derivativeAnalytic1.asFloatingPoint(), derivativeAlgorithmic1.asFloatingPoint(), 1E-15, "partial derivative dz/dx");
@@ -59,13 +59,13 @@ class ValueDoubleDifferentiableTest {
 			Value x1 = x.mult(new ValueDoubleDifferentiable(2.0));
 			Value x2 = x1.mult(new ValueDoubleDifferentiable(4.0));
 			Value x3 = x1.add(x2);
-			
+
 			return x3;
 		};
 
 		ValueDifferentiable x = new ValueDoubleDifferentiable(1.0);
 		ValueDifferentiable y = (ValueDifferentiable) function.apply(x);
-		
+
 		Double derivativeAnalytic = 10.0;
 		Value derivativeAlgorithmic = y.getDerivativeWithRespectTo(x);
 		assertEquals(derivativeAnalytic, derivativeAlgorithmic.asFloatingPoint(), 1E-15, "partial derivative dy/dx");
