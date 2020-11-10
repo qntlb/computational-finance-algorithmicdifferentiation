@@ -26,7 +26,7 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable {
 
 	/**
 	 * Creates a node from an operation.
-	 * 
+	 *
 	 * @param value Value of this node.
 	 * @param operator Operator that lead to this value.
 	 * @param arguments Arguments that were used in this operation.
@@ -41,7 +41,7 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable {
 
 	/**
 	 * Creates a node from a constant - a leaf node.
-	 * 
+	 *
 	 * @param value Value of this node.
 	 */
 	public ValueDoubleDifferentiable(Double value) {
@@ -94,7 +94,7 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable {
 
 	/**
 	 * Get the derivatives of a node with respect to all input nodes via a backward algorithmic differentiation (adjoint differentiation).
-	 * 
+	 *
 	 * @return A map x -> D which gives D = dy/dx, where y is this node and x is any input node.
 	 */
 	public Map<ValueDifferentiable, Double> getDerivativeWithRespectTo() {
@@ -129,13 +129,13 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable {
 
 	/**
 	 * Apply the update rule Di = Di + Dm * dxm / dxi (where Dm = dy/xm).
-	 * 
+	 *
 	 * @param derivatives The map that contains the derivatives x -> dy/dx and will be updated, that is Di = dy/dx_{i}.
 	 * @param node The current node (xm).
 	 * @param arguments The (list of) arguments of the current node (the i's).
 	 */
 	private void propagateDerivativeToArguments(Map<ValueDifferentiable, Double> derivatives, ValueDoubleDifferentiable node, List<ValueDoubleDifferentiable> arguments) {
-		
+
 		switch(node.getOperator()) {
 		case ADD:
 			derivatives.put(arguments.get(0), derivatives.getOrDefault(arguments.get(0),0.0) + derivatives.get(node) * 1.0);
@@ -157,7 +157,7 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable {
 		case SQRT:
 			derivatives.put(arguments.get(0), derivatives.getOrDefault(arguments.get(0),0.0) + derivatives.get(node) / 2 / Math.sqrt(arguments.get(0).asFloatingPoint()));
 			break;
-		}	
+		}
 	}
 
 	@Override
