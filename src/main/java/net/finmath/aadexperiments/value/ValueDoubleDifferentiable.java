@@ -150,17 +150,8 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable, Convertab
 			derivatives.put(arguments.get(1), derivatives.getOrDefault(arguments.get(1),0.0) + derivatives.get(node) * arguments.get(0).asFloatingPoint());
 			break;
 		case DIV:
-			double x = arguments.get(0).asFloatingPoint();
-			double y = arguments.get(1).asFloatingPoint();
-			double derivativeOfCurrentNode = derivatives.get(node);
-			double derivativeOfFirstArgumentNode = derivatives.getOrDefault(arguments.get(0),0.0);
-			double derivativeOfSecondArgumentNode = derivatives.getOrDefault(arguments.get(1),0.0);
-			// Update
-			derivativeOfFirstArgumentNode = derivativeOfFirstArgumentNode + derivativeOfCurrentNode * 1/y;
-			derivativeOfSecondArgumentNode = derivativeOfSecondArgumentNode - derivativeOfCurrentNode * x/(y*y);
-			// Store
-			derivatives.put(arguments.get(0), derivativeOfFirstArgumentNode);
-			derivatives.put(arguments.get(1), derivativeOfSecondArgumentNode);
+			derivatives.put(arguments.get(0), derivatives.getOrDefault(arguments.get(0),0.0) + derivatives.get(node) * 1.0/arguments.get(1).asFloatingPoint());
+			derivatives.put(arguments.get(1), derivatives.getOrDefault(arguments.get(1),0.0) - derivatives.get(node) * arguments.get(0).asFloatingPoint()/Math.pow(arguments.get(1).asFloatingPoint(), 2));
 			break;
 		case SQUARED:
 			derivatives.put(arguments.get(0), derivatives.getOrDefault(arguments.get(0),0.0) + derivatives.get(node) * 2 * arguments.get(0).asFloatingPoint());

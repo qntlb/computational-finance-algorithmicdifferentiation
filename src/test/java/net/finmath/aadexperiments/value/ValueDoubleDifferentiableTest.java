@@ -101,6 +101,20 @@ class ValueDoubleDifferentiableTest {
 		assertEquals(derivativeAnalytic, valueOf(derivativeAlgorithmic), 1E-15, "partial derivative dy/dx");
 	}
 
+	/**
+	 * This test checks the implementation of div;
+	 */
+	@Test
+	void testDiv() {
+		ValueDifferentiable x0 = new ValueDoubleDifferentiable(6.0);
+
+		Value y = x0.div(x0);
+
+		Double derivativeAnalytic = 0.0;
+		Value derivativeAlgorithmic = ((ValueDifferentiable)y).getDerivativeWithRespectTo(x0);
+		assertEquals(derivativeAnalytic, valueOf(derivativeAlgorithmic), 1E-15, "partial derivative dy/dx");
+	}
+
 	private static double valueOf(Value x) {
 		return ((ConvertableToFloatingPoint)x).asFloatingPoint();
 	}	
