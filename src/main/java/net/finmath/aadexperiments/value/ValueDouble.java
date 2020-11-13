@@ -5,7 +5,7 @@
  */
 package net.finmath.aadexperiments.value;
 
-public class ValueDouble implements Value {
+public class ValueDouble implements Value, ConvertableToFloatingPoint {
 
 	private Double value;
 
@@ -26,22 +26,22 @@ public class ValueDouble implements Value {
 
 	@Override
 	public Value add(Value x) {
-		return new ValueDouble(this.value + x.asFloatingPoint());
+		return new ValueDouble(this.value + valueOf(x));
 	}
 
 	@Override
 	public Value sub(Value x) {
-		return new ValueDouble(value - x.asFloatingPoint());
+		return new ValueDouble(value - valueOf(x));
 	}
 
 	@Override
 	public Value mult(Value x) {
-		return new ValueDouble(value * x.asFloatingPoint());
+		return new ValueDouble(value * valueOf(x));
 	}
 
 	@Override
 	public Value div(Value x) {
-		return new ValueDouble(value / x.asFloatingPoint());
+		return new ValueDouble(value / valueOf(x));
 	}
 
 	@Override
@@ -52,5 +52,9 @@ public class ValueDouble implements Value {
 	@Override
 	public String toString() {
 		return value.toString();
+	}
+	
+	private static double valueOf(Value x) {
+		return ((ConvertableToFloatingPoint)x).asFloatingPoint();
 	}
 }

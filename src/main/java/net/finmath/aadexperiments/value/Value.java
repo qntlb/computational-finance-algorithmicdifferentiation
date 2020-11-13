@@ -48,11 +48,4 @@ public interface Value {
 	 * @return New object representing the result.
 	 */
 	Value div(Value x);
-
-	/**
-	 * Returns the floating point value of this object
-	 *
-	 * @return Floating point value represented by this object
-	 */
-	Double asFloatingPoint();
 }

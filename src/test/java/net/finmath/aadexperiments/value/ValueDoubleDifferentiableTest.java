@@ -25,11 +25,11 @@ class ValueDoubleDifferentiableTest {
 
 		Value derivativeAnalytic1 = a.div(c);
 		Value derivativeAlgorithmic1 = c.getDerivativeWithRespectTo(a);
-		assertEquals(derivativeAnalytic1.asFloatingPoint(), derivativeAlgorithmic1.asFloatingPoint(), 1E-15, "partial derivative dz/dx");
+		assertEquals(valueOf(derivativeAnalytic1), valueOf(derivativeAlgorithmic1), 1E-15, "partial derivative dz/dx");
 
 		Value derivativeAnalytic2 = b.div(c);
 		Value derivativeAlgorithmic2 = c.getDerivativeWithRespectTo(b);
-		assertEquals(derivativeAnalytic2.asFloatingPoint(), derivativeAlgorithmic2.asFloatingPoint(), 1E-15, "partial derivative dz/dx");
+		assertEquals(valueOf(derivativeAnalytic2), valueOf(derivativeAlgorithmic2), 1E-15, "partial derivative dz/dx");
 	}
 
 	@Test
@@ -43,11 +43,11 @@ class ValueDoubleDifferentiableTest {
 
 		Value derivativeAnalytic1 = a.div(c);
 		Value derivativeAlgorithmic1 = c.getDerivativeWithRespectTo(a);
-		assertEquals(derivativeAnalytic1.asFloatingPoint(), derivativeAlgorithmic1.asFloatingPoint(), 1E-15, "partial derivative dz/dx");
+		assertEquals(valueOf(derivativeAnalytic1), valueOf(derivativeAlgorithmic1), 1E-15, "partial derivative dz/dx");
 
 		Value derivativeAnalytic2 = b.div(c);
 		Value derivativeAlgorithmic2 = c.getDerivativeWithRespectTo(b);
-		assertEquals(derivativeAnalytic2.asFloatingPoint(), derivativeAlgorithmic2.asFloatingPoint(), 1E-15, "partial derivative dz/dx");
+		assertEquals(valueOf(derivativeAnalytic2), valueOf(derivativeAlgorithmic2), 1E-15, "partial derivative dz/dx");
 	}
 
 	/**
@@ -68,6 +68,40 @@ class ValueDoubleDifferentiableTest {
 
 		Double derivativeAnalytic = 10.0;
 		Value derivativeAlgorithmic = y.getDerivativeWithRespectTo(x);
-		assertEquals(derivativeAnalytic, derivativeAlgorithmic.asFloatingPoint(), 1E-15, "partial derivative dy/dx");
+		assertEquals(derivativeAnalytic, valueOf(derivativeAlgorithmic), 1E-15, "partial derivative dy/dx");
 	}
+
+	/**
+	 * This test checks the implementation of div;
+	 */
+	@Test
+	void testDivFirstArg() {
+		ValueDifferentiable x0 = new ValueDoubleDifferentiable(6.0);
+		ValueDifferentiable x1 = new ValueDoubleDifferentiable(2.0);
+
+		Value y = x0.div(x1);
+
+		Double derivativeAnalytic = 1.0 / 2.0;
+		Value derivativeAlgorithmic = ((ValueDifferentiable)y).getDerivativeWithRespectTo(x0);
+		assertEquals(derivativeAnalytic, valueOf(derivativeAlgorithmic), 1E-15, "partial derivative dy/dx");
+	}
+
+	/**
+	 * This test checks the implementation of div;
+	 */
+	@Test
+	void testDivSecondArg() {
+		ValueDifferentiable x0 = new ValueDoubleDifferentiable(6.0);
+		ValueDifferentiable x1 = new ValueDoubleDifferentiable(2.0);
+
+		Value y = x0.div(x1);
+
+		Double derivativeAnalytic = -6.0 / 4.0;
+		Value derivativeAlgorithmic = ((ValueDifferentiable)y).getDerivativeWithRespectTo(x1);
+		assertEquals(derivativeAnalytic, valueOf(derivativeAlgorithmic), 1E-15, "partial derivative dy/dx");
+	}
+
+	private static double valueOf(Value x) {
+		return ((ConvertableToFloatingPoint)x).asFloatingPoint();
+	}	
 }

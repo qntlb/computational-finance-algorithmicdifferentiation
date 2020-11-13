@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class ValueDoubleDifferentiable implements ValueDifferentiable {
+public class ValueDoubleDifferentiable implements ValueDifferentiable, ConvertableToFloatingPoint {
 
 	private enum Operator {
 		SQUARED, SQRT, ADD, SUB, MULT, DIV
@@ -64,22 +64,22 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable {
 
 	@Override
 	public Value add(Value x) {
-		return new ValueDoubleDifferentiable(value + x.asFloatingPoint(), Operator.ADD, List.of(this, (ValueDoubleDifferentiable)x));
+		return new ValueDoubleDifferentiable(value + valueOf(x), Operator.ADD, List.of(this, (ValueDoubleDifferentiable)x));
 	}
 
 	@Override
 	public Value sub(Value x) {
-		return new ValueDoubleDifferentiable(value - x.asFloatingPoint(), Operator.SUB, List.of(this, (ValueDoubleDifferentiable)x));
+		return new ValueDoubleDifferentiable(value - valueOf(x), Operator.SUB, List.of(this, (ValueDoubleDifferentiable)x));
 	}
 
 	@Override
 	public Value mult(Value x) {
-		return new ValueDoubleDifferentiable(value * x.asFloatingPoint(), Operator.MULT, List.of(this, (ValueDoubleDifferentiable)x));
+		return new ValueDoubleDifferentiable(value * valueOf(x), Operator.MULT, List.of(this, (ValueDoubleDifferentiable)x));
 	}
 
 	@Override
 	public Value div(Value x) {
-		return new ValueDoubleDifferentiable(value / x.asFloatingPoint(), Operator.DIV, List.of(this, (ValueDoubleDifferentiable)x));
+		return new ValueDoubleDifferentiable(value / valueOf(x), Operator.DIV, List.of(this, (ValueDoubleDifferentiable)x));
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable {
 	 * @return A map x -> D which gives D = dy/dx, where y is this node and x is any input node.
 	 */
 	public Map<ValueDifferentiable, Double> getDerivativeWithRespectTo() {
-		// The map that will contain the derivatives x -> dy/dx
+		// The map that will contain the derivatives x -> dy/dx				// The map contains in iteration m the values d F
 		Map<ValueDifferentiable, Double> derivativesWithRespectTo = new HashMap<>();
 		// Init with dy / dy = 1
 		derivativesWithRespectTo.put(this, 1.0);
@@ -150,6 +150,17 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable {
 			derivatives.put(arguments.get(1), derivatives.getOrDefault(arguments.get(1),0.0) + derivatives.get(node) * arguments.get(0).asFloatingPoint());
 			break;
 		case DIV:
+			double x = arguments.get(0).asFloatingPoint();
+			double y = arguments.get(1).asFloatingPoint();
+			double derivativeOfCurrentNode = derivatives.get(node);
+			double derivativeOfFirstArgumentNode = derivatives.getOrDefault(arguments.get(0),0.0);
+			double derivativeOfSecondArgumentNode = derivatives.getOrDefault(arguments.get(1),0.0);
+			// Update
+			derivativeOfFirstArgumentNode = derivativeOfFirstArgumentNode + derivativeOfCurrentNode * 1/y;
+			derivativeOfSecondArgumentNode = derivativeOfSecondArgumentNode - derivativeOfCurrentNode * x/(y*y);
+			// Store
+			derivatives.put(arguments.get(0), derivativeOfFirstArgumentNode);
+			derivatives.put(arguments.get(1), derivativeOfSecondArgumentNode);
 			break;
 		case SQUARED:
 			derivatives.put(arguments.get(0), derivatives.getOrDefault(arguments.get(0),0.0) + derivatives.get(node) * 2 * arguments.get(0).asFloatingPoint());
@@ -176,5 +187,10 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable {
 
 	Long getID() {
 		return id.longValue();
+	}
+
+	
+	private static double valueOf(Value x) {
+		return ((ConvertableToFloatingPoint)x).asFloatingPoint();
 	}
 }
