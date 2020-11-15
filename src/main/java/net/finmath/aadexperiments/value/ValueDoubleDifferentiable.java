@@ -8,6 +8,7 @@ package net.finmath.aadexperiments.value;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -104,7 +105,7 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable, Convertab
 		derivativesWithRespectTo.put(this, 1.0);
 
 		// This creates a set (queue) of objects, sorted ascending by their getID() value (last = highest ID)
-		TreeSet<ValueDoubleDifferentiable> nodesToProcess = new TreeSet<>((o1,o2) -> o1.getID().compareTo(o2.getID()));
+		NavigableSet<ValueDoubleDifferentiable> nodesToProcess = new TreeSet<>((o1,o2) -> o1.getID().compareTo(o2.getID()));
 
 		// Add the root note
 		nodesToProcess.add(this);
@@ -149,9 +150,11 @@ public class ValueDoubleDifferentiable implements ValueDifferentiable, Convertab
 			derivatives.put(arguments.get(0), derivatives.getOrDefault(arguments.get(0),0.0) + derivatives.get(node) * arguments.get(1).asFloatingPoint());
 			derivatives.put(arguments.get(1), derivatives.getOrDefault(arguments.get(1),0.0) + derivatives.get(node) * arguments.get(0).asFloatingPoint());
 			break;
-		case DIV:
-			derivatives.put(arguments.get(0), derivatives.getOrDefault(arguments.get(0),0.0) + derivatives.get(node) * 1.0/arguments.get(1).asFloatingPoint());
-			derivatives.put(arguments.get(1), derivatives.getOrDefault(arguments.get(1),0.0) - derivatives.get(node) * arguments.get(0).asFloatingPoint()/Math.pow(arguments.get(1).asFloatingPoint(), 2));
+		case DIV:	// z = x/y
+			double x = arguments.get(0).asFloatingPoint();
+			double y = arguments.get(1).asFloatingPoint();
+			derivatives.put(arguments.get(0), derivatives.getOrDefault(arguments.get(0), 0.0) + derivatives.get(node) / y);
+			derivatives.put(arguments.get(1), derivatives.getOrDefault(arguments.get(1), 0.0) - derivatives.get(node) * x / (y*y));
 			break;
 		case SQUARED:
 			derivatives.put(arguments.get(0), derivatives.getOrDefault(arguments.get(0),0.0) + derivatives.get(node) * 2 * arguments.get(0).asFloatingPoint());
